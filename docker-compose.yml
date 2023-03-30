@@ -3,7 +3,7 @@ version: '3'
 
 services:
   wp:
-    container_name: webname_wp
+    container_name: ${WEB_NAME}_wp
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -28,7 +28,7 @@ services:
       - npm
 
   wpcli:
-    container_name: webname_wp_cli
+    container_name: ${WEB_NAME}_wp_cli
     image: wordpress:cli
     volumes:
       - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
@@ -45,7 +45,7 @@ services:
       - wp_network
 
   pma:
-    container_name: webname_wp_pma
+    container_name: ${WEB_NAME}_wp_pma
     image: phpmyadmin/phpmyadmin
     environment:
       # https://docs.phpmyadmin.net/en/latest/setup.html#docker-environment-variables
@@ -62,7 +62,7 @@ services:
       - npm
 
   db:
-    container_name: ${DB_HOST}
+    container_name: ${WEB_NAME}_db
     image: mysql:latest # https://hub.docker.com/_/mysql/ - or mariadb https://hub.docker.com/_/mariadb
     ports:
       # - ${IP}:3306:3306 # change ip if required
@@ -83,6 +83,7 @@ services:
 
 networks:
   wp_network:
+    name: ${NETWORK}
   npm:
     name: nginxproxyman
     external: true
