@@ -62,7 +62,7 @@ services:
       - npm
 
   db:
-    container_name: ${WEB_NAME}_db
+    container_name: ${DB_HOST}
     image: mysql:latest # https://hub.docker.com/_/mysql/ - or mariadb https://hub.docker.com/_/mariadb
     ports:
       # - ${IP}:3306:3306 # change ip if required
