@@ -3,7 +3,7 @@ version: '3'
 
 services:
   wp:
-    container_name: ${WEB_NAME}_wp
+    container_name: ${WEBNAME}_wp
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -24,12 +24,13 @@ services:
     links:
       - db
     networks:
-      - wp_network
+      - digituts_network
       - npm
 
   wpcli:
-    container_name: ${WEB_NAME}_wp_cli
+    container_name: ${WEBNAME}_wp_cli
     image: wordpress:cli
+    command: tail -f /dev/null
     volumes:
       - ./config/php.conf.ini:/usr/local/etc/php/conf.d/conf.ini
       - ./wp-app:/var/www/html
@@ -42,51 +43,50 @@ services:
       - db
       - wp
     networks:
-      - wp_network
+      - digituts_network
 
   pma:
-    container_name: ${WEB_NAME}_wp_pma
+    container_name: ${WEBNAME}_wp_pma
     image: phpmyadmin/phpmyadmin
     environment:
       # https://docs.phpmyadmin.net/en/latest/setup.html#docker-environment-variables
-      PMA_HOST: ${DB_HOST}
-      PMA_PORT: 3306
+      PMA_HOST: db
+      # PMA_PORT: "${PMA_PORT}"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
       UPLOAD_LIMIT: 50M
     ports:
-      - "80"
+      - "3307"
     links:
       - db:db
     networks:
-      - wp_network
+      - digituts_network
       - npm
 
   db:
     container_name: ${DB_HOST}
-    image: mysql:latest # https://hub.docker.com/_/mysql/ - or mariadb https://hub.docker.com/_/mariadb
+    image: mariadb:latest # https://hub.docker.com/_/mysql/ - or mariadb https://hub.docker.com/_/mariadb
     ports:
       # - ${IP}:3306:3306 # change ip if required
       - "3306"
     command: [
-        '--default_authentication_plugin=mysql_native_password',
         '--character-set-server=utf8mb4',
         '--collation-server=utf8mb4_unicode_ci'
     ]
     volumes:
       - ./wp-data:/docker-entrypoint-initdb.d
-      - db_data:/var/lib/mysql
+      - digituts_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: "${DB_NAME}"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
     networks:
-      - wp_network
+      - digituts_network
 
 networks:
-  wp_network:
-    name: ${NETWORK}
+  digituts_network:
+    name: digituts_network
   npm:
     name: nginxproxyman
     external: true
     
 volumes:
-  db_data:
+  digituts_data:
