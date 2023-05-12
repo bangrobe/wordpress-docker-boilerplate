@@ -26,7 +26,7 @@ services:
     networks:
       - digituts_network
       - npm
-
+      
   wpcli:
     container_name: ${WEBNAME}_wp_cli
     image: wordpress:cli
@@ -70,8 +70,14 @@ services:
       - "3306"
     command: [
         '--character-set-server=utf8mb4',
-        '--collation-server=utf8mb4_unicode_ci'
+        '--collation-server=utf8mb4_unicode_ci',
+        '--innodb-buffer-pool-size=50M'
     ]
+    ulimits:
+            nproc: 65535
+            nofile:
+                soft: 20000
+                hard: 40000
     volumes:
       - ./wp-data:/docker-entrypoint-initdb.d
       - digituts_data:/var/lib/mysql
