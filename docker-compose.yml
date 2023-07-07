@@ -24,7 +24,7 @@ services:
     links:
       - db
     networks:
-      - digituts_network
+      - smtgl_network
       - npm
       
   wpcli:
@@ -43,7 +43,7 @@ services:
       - db
       - wp
     networks:
-      - digituts_network
+      - smtgl_network
 
   pma:
     container_name: ${WEBNAME}_wp_pma
@@ -59,7 +59,7 @@ services:
     links:
       - db:db
     networks:
-      - digituts_network
+      - smtgl_network
       - npm
 
   db:
@@ -80,19 +80,19 @@ services:
                 hard: 40000
     volumes:
       - ./wp-data:/docker-entrypoint-initdb.d
-      - digituts_data:/var/lib/mysql
+      - smtgl_data:/var/lib/mysql
     environment:
       MYSQL_DATABASE: "${DB_NAME}"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
     networks:
-      - digituts_network
+      - smtgl_network
 
 networks:
-  digituts_network:
-    name: digituts_network
+  smtgl_network:
+    name: smtgl_network
   npm:
     name: nginxproxyman
     external: true
     
 volumes:
-  digituts_data:
+  smtgl_data:
